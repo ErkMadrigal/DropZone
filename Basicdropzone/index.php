@@ -43,7 +43,7 @@
                 dictCancelUpload: true,
                 dictRemoveFileConfirmation: true,
                 addRemoveLinks: true,
-                maxFileSize: 2,
+                maxFilesize: 2,
                 maxFiles: 2,
                 acceptedFiles: 'images/*',
 

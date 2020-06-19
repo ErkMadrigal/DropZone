@@ -18,6 +18,7 @@ if($request == 1){
 	}
 	echo $msg;
 }
+$request = $_POST['request'];
 
 // Remove file
 if($request == 2){
