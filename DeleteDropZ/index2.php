@@ -43,36 +43,73 @@
         .dz-error-message{
             margin-top: 1.5rem;
         }
+        #notifications{
+            cursor: pointer;
+            position: fixed;
+            right: 0px;
+            z-index: 9999;
+            bottom: 0px;
+            margin-bottom: 22px;
+            margin-right: 15px;
+            max-width: 300px;   
+        }
     </style>
     <body>
+        <div class="notifications" id="notifications"></div>
         <div class="container" >
             <div class='content'>
                 <form action="upload.php" class="dropzone" id="myAwesomeDropzone"> 
                 </form>  
+                <button class="btn btn-primary" type="button" id='uploadfiles' value='Upload Files'>Subir</button>
             </div> 
-            <button class="btn btn-primary" type="button" id='uploadfiles' value='Upload Files'>Subir</button>
+
+            <form class="needs-validation-post d-none" id="form" novalidate>
+                <div class="input-group mb-3">
+                    <input type="text"  name="name" class="form-control" placeholder="Nombre" required>
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-user"></span>
+                        </div>
+                    </div>
+                    <div class="invalid-feedback">
+                        agrega un nombre
+                    </div>
+                </div>
+                <button class="btn btn-primary btn-block" id="registrar">enviar</button>
+            </form>
         </div>
         
-        <script src="dropzone.js" type="text/javascript"></script>  
-        <script type='text/javascript'>
-        
-            let file = document.querySelector('#uploadfiles');
+        <script src="dropzone.js" type="text/javascript"></script> 
+        <script src="Notify.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script> 
+        <script>
+            const fetchAPI = async( url , method , data ) =>{
+                let resp =  await fetch(url,{
+                    method :  method,
+                    body : data 
+                });
+                return resp.json();
+            }
+            
+            var myAwesomeDropzone = document.querySelector('#myAwesomeDropzone');
+            var file = document.querySelector('#uploadfiles');
+            var form = document.querySelector('#form');
             
             Dropzone.autoDiscover = false;
             var myDropzone = new Dropzone(".dropzone", { 
                 // url: null,//se especifica cuando el form no tiene el aributo action, por de fault toma la url del action en el formulario
                 // method: "post", //por defecto es post se puede poner get, put, etc.....
                 withCredentials: false,
-                parallelUploads: 5, //Cuanto archivos subir al mismo tiempo
+                parallelUploads: 8, //Cuanto archivos subir al mismo tiempo
                 uploadMultiple: false,
-                maxFilesize: 5, //Maximo Tama�o del archivo expresado en mg
+                maxFilesize: 8, //Maximo Tama�o del archivo expresado en mg
                 paramName: "file",//Nombre con el que se envia el archivo a nivel de parametro
                 createImageThumbnails: true,
                 maxThumbnailFilesize: 10, //Limite para generar imagenes (Previsualizacion)
                 thumbnailWidth: 154, //Medida de largo de la Previsualizacion
                 thumbnailHeight: 154,//Medida alto Previsualizacion
                 filesizeBase: 1000,
-                maxFiles: 5,//si no es nulo, define cu�ntos archivos se cargaRAN. Si se excede, se llamar� el EVENTO maxfilesexceeded.
+                maxFiles: 8,//si no es nulo, define cu�ntos archivos se cargaRAN. Si se excede, se llamar� el EVENTO maxfilesexceeded.
                 params: {}, //Parametros adicionales al formulario de envio ejemplo {tipo:"imagen"}
                 clickable: true,
                 ignoreHiddenFiles: true,
@@ -98,11 +135,88 @@
                 
             });
 
-            file.addEventListener('click', () => {
-                myDropzone.processQueue();
-                e.stopPropagation();
-            });
 
+            file.addEventListener('click', () => {
+               
+                if(myDropzone.files.length > myDropzone.options.maxFiles){
+                                        
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'No seas pendejo.',
+                        text: 'te exediste en numero de imagenes, borra unas'
+                    })
+                }else if(myDropzone.files.length < myDropzone.options.maxFiles){
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'No seas pendejo.',
+                        text: 'faltan imagenes, borra unas'
+                    })
+                }else if(myDropzone.files.length == myDropzone.options.maxFiles){
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'correcto.'
+                    })
+
+                    form.classList.remove('d-none');
+                    myAwesomeDropzone.setAttribute("disabled", false);
+                    file.setAttribute("disabled", false)
+                    
+                    myDropzone.processQueue();
+                    console.log(myDropzone.files[0].name)
+                    console.log(myDropzone.files[1].name)
+                    console.log(myDropzone.files[2].name)
+                    console.log(myDropzone.files[3].name)
+                    console.log(myDropzone.files[4].name)
+                    console.log(myDropzone.files[5].name)
+                    console.log(myDropzone.files[6].name)
+                    console.log(myDropzone.files[7].name)
+                    
+                    var img1 = myDropzone.files[0].name; 
+                    var img2 = myDropzone.files[1].name; 
+                    var img3 = myDropzone.files[2].name; 
+                    var img4 = myDropzone.files[3].name; 
+                    var img5 = myDropzone.files[4].name; 
+                    var img6 = myDropzone.files[5].name; 
+                    var img7 = myDropzone.files[6].name; 
+                    var img8 = myDropzone.files[7].name; 
+
+                    var forms = document.getElementsByClassName('needs-validation-post');
+
+                    Array.prototype.filter.call(forms, (form) => {
+                        form.addEventListener('submit',  (event) => {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            if (form.checkValidity()){
+                                let data = new FormData(forms[0]);
+                                data.append("opcion","post");
+                                data.append("img1", img1);
+                                data.append("img2", img2);
+                                data.append("img3", img3);
+                                data.append("img4", img4);
+                                data.append("img5", img5);
+                                data.append("img6", img6);
+                                data.append("img7", img7);
+                                data.append("img8", img8);
+
+                                let url = "registrar.php";
+                                fetchAPI(url, "POST", data) 
+                                .then((data)=>{
+                                    console.log(data)
+                                    // Notify(data, null, null, 'success');
+                                    // if(data.estatus == "ok"){
+                                    //     Notify(data.mensaje, null, null, 'success');
+                                    // }
+                                })
+                                .catch((e)=>console.error(e));
+                            }
+                            form.classList.add('was-validated');
+                        }, false);
+                    });
+
+                }
+
+            });
+            
         </script>
         
     </body>
