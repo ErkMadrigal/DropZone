@@ -6,7 +6,7 @@
             $respuesta = null;
 
             try{
-                $sql = "INSERT INTO post(text, img1, img2, img3, img4, img5, img6, img7, img8) VALUES (:text, :img1, :img2, :img3, :img4, :img5, :img6, :img7, :img8,)";
+                $sql = "INSERT INTO post(text, img1, img2, img3, img4, img5, img6, img7, img8) VALUES (:text, :img1, :img2, :img3, :img4, :img5, :img6, :img7, :img8)";
                 $database = new database();
                 $db = $database->getConnection();
                 $stmt = $db->prepare($sql);

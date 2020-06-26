@@ -55,7 +55,7 @@
         }
     </style>
     <body>
-        <div class="notifications" id="notifications"></div>
+        <div id="notifications"></div>
         <div class="container" >
             <div class='content'>
                 <form action="upload.php" class="dropzone" id="myAwesomeDropzone"> 
@@ -78,7 +78,7 @@
                 <button class="btn btn-primary btn-block" id="registrar">enviar</button>
             </form>
         </div>
-        
+        <script src="jquery.min.js"></script>                
         <script src="dropzone.js" type="text/javascript"></script> 
         <script src="Notify.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script> 
@@ -139,37 +139,24 @@
             file.addEventListener('click', () => {
                
                 if(myDropzone.files.length > myDropzone.options.maxFiles){
-                                        
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'No seas pendejo.',
-                        text: 'te exediste en numero de imagenes, borra unas'
-                    })
+                    
+                    Notify('error, No seas pendejo. te exediste en numero de imagenes, tienen que ser 8, borra unas', null, null, 'danger');
+                 
                 }else if(myDropzone.files.length < myDropzone.options.maxFiles){
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'No seas pendejo.',
-                        text: 'faltan imagenes, borra unas'
-                    })
+
+                    Notify('error, No seas pendejo. faltan imagenes, agrega mas imagenes hasta que sean 8', null, null, 'danger');
+
                 }else if(myDropzone.files.length == myDropzone.options.maxFiles){
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'correcto.'
-                    })
+
+                    Notify('las imagenes han sido guardadas', null, null, 'info');
 
                     form.classList.remove('d-none');
+                    file.classList.add('d-none');
+                    
                     myAwesomeDropzone.setAttribute("disabled", false);
                     file.setAttribute("disabled", false)
                     
-                    myDropzone.processQueue();
-                    console.log(myDropzone.files[0].name)
-                    console.log(myDropzone.files[1].name)
-                    console.log(myDropzone.files[2].name)
-                    console.log(myDropzone.files[3].name)
-                    console.log(myDropzone.files[4].name)
-                    console.log(myDropzone.files[5].name)
-                    console.log(myDropzone.files[6].name)
-                    console.log(myDropzone.files[7].name)
+                    myDropzone.processQueue(); 
                     
                     var img1 = myDropzone.files[0].name; 
                     var img2 = myDropzone.files[1].name; 
@@ -201,11 +188,36 @@
                                 let url = "registrar.php";
                                 fetchAPI(url, "POST", data) 
                                 .then((data)=>{
-                                    console.log(data)
-                                    // Notify(data, null, null, 'success');
-                                    // if(data.estatus == "ok"){
-                                    //     Notify(data.mensaje, null, null, 'success');
-                                    // }
+                                    if(data.estatus == "ok"){
+s                                        let timerInterval
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: data.mensaje,
+                                            timer: 2000,
+                                            timerProgressBar: true,
+                                            onBeforeOpen: () => {
+                                                Swal.showLoading()
+                                                timerInterval = setInterval(() => {
+                                                const content = Swal.getContent()
+                                                if (content) {
+                                                    const b = content.querySelector('b')
+                                                    if (b) {
+                                                    b.textContent = Swal.getTimerLeft()
+                                                    }
+                                                }
+                                                }, 100)
+                                            },
+                                            onClose: () => {
+                                                clearInterval(timerInterval)
+                                            }
+                                            }).then((result) => {
+
+                                                if (result.dismiss === Swal.DismissReason.timer) {
+                                                location.reload(true);
+                                            }
+                                        })
+
+                                    }
                                 })
                                 .catch((e)=>console.error(e));
                             }
