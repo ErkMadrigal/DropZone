@@ -57,13 +57,13 @@
     <body>
         <div id="notifications"></div>
         <div class="container" >
-            <div class='content'>
+            <div class='content' id="cuadro-files">
                 <form action="upload.php" class="dropzone" id="myAwesomeDropzone"> 
                 </form>  
                 <button class="btn btn-primary" type="button" id='uploadfiles' value='Upload Files'>Subir</button>
             </div> 
 
-            <form class="needs-validation-post d-none" id="form" novalidate>
+            <form class="needs-validation-post d-none m-5" id="form" novalidate>
                 <div class="input-group mb-3">
                     <input type="text"  name="name" class="form-control" placeholder="Nombre" required>
                     <div class="input-group-append">
@@ -79,7 +79,7 @@
             </form>
         </div>
         <script src="jquery.min.js"></script>                
-        <script src="dropzone.js" type="text/javascript"></script> 
+        <script src="dropzone.js"></script> 
         <script src="Notify.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script> 
         <script>
@@ -91,6 +91,7 @@
                 return resp.json();
             }
             
+            var cuadroFiles = document.querySelector("#cuadro-files");
             var myAwesomeDropzone = document.querySelector('#myAwesomeDropzone');
             var file = document.querySelector('#uploadfiles');
             var form = document.querySelector('#form');
@@ -152,6 +153,7 @@
 
                     form.classList.remove('d-none');
                     file.classList.add('d-none');
+                    cuadroFiles.classList.add('d-none');
                     
                     myAwesomeDropzone.setAttribute("disabled", false);
                     file.setAttribute("disabled", false)
@@ -189,7 +191,7 @@
                                 fetchAPI(url, "POST", data) 
                                 .then((data)=>{
                                     if(data.estatus == "ok"){
-s                                        let timerInterval
+                                        let timerInterval
                                         Swal.fire({
                                             icon: 'success',
                                             title: data.mensaje,
